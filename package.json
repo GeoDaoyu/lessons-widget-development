@@ -1,0 +1,11 @@
+{
+  "name": "lessons-widget-development",
+  "version": "1.0.0",
+  "author": "zhanggy",
+  "private": true,
+  "dependencies": {
+    "@types/arcgis-js-api": "4.18.0",
+    "@types/dojo": "^1.9.43",
+    "esri-reveal.js-templates": "git+https://github.com/esri/reveal.js.git#153be4b866aa342b2ffe9a6c9401341bdb4ccd54"
+  }
+}
