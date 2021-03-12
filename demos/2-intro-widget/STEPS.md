@@ -1,6 +1,6 @@
 # 介绍微件
 
-1. 添加Home微件
+1. 使用Home微件
    ``` ts
    const homeWidget = new Home({
      view: view,
@@ -9,7 +9,7 @@
    view.ui.add(homeWidget, "top-left");
    ```
    
-2. 使用ViewModel
+2. 使用HomeViewModel
 
    ```ts
    const homeViewModel = new HomeViewModel({

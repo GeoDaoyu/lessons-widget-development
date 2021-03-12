@@ -2,33 +2,35 @@
 
 1. 创建项目目录
 
-   ``` shell
+   ```shell
    cd <project-directory>
    ```
 
 2. 安装依赖
 
-   ``` shell
+   ```shell
    npm install --save-dev @types/arcgis-js-api @types/dojo
    ```
 
 3. 配置
    新建一个配置文件(`tsconfig.json`)到根目录。内容复制[官网的指导页面](https://developers.arcgis.com/javascript/latest/guide/typescript-setup/index.html#compile-typescript)。根据自己的目录结构，稍作修改。
 
-   ``` json
+   ```json
    {
      "compilerOptions": {
+       "esModuleInterop": true,
        "module": "amd",
        "noImplicitAny": true,
-       "esModuleInterop": true,
        "sourceMap": true,
        "jsx": "react",
        "jsxFactory": "tsx",
-       "target": "ES2016",
+       "lib": ["dom", "es2015", "es2015.promise", "scripthost"],
+       "target": "es5",
        "experimentalDecorators": true,
        "preserveConstEnums": true,
        "suppressImplicitAnyIndexErrors": true,
-       "skipLibCheck": true
+       "importHelpers": true,
+       "moduleResolution": "node"
      },
      "include": ["./demos"],
      "exclude": ["node_modules"]
@@ -37,7 +39,7 @@
 
 4. 编译并监听文件变化
 
-      ``` shell
+   ```shell
    npx tsx -w
    ```
 
@@ -46,11 +48,11 @@
    ```ts
    import EsriMap from "esri/Map";
    import MapView from "esri/views/MapView";
-   
+
    const map = new EsriMap({
      basemap: "streets",
    });
-   
+
    const view = new MapView({
      map: map,
      container: "viewDiv",
