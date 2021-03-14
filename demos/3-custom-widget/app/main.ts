@@ -1,6 +1,6 @@
 import EsriMap from "esri/Map";
 import MapView from "esri/views/MapView";
-import Home from "./Home";
+// import Recenter from "./Recenter";
 
 const map = new EsriMap({
   basemap: "streets",
@@ -13,6 +13,10 @@ const view = new MapView({
   zoom: 8,
 });
 
-const homeWidget = new Home();
-
-view.ui.add(homeWidget, "top-left");
+// view.when(function () {
+//   const recenter = new Recenter({
+//     view: view,
+//     initialCenter: [120, 30],
+//   });
+//   view.ui.add(recenter, "top-right");
+// });

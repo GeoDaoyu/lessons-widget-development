@@ -5,3 +5,19 @@ body,
   margin: 0;
   height: 100%;
 }
+
+/* .recenter-tool {
+  padding: 2em;
+  width: 150px;
+  height: 50px;
+  color: #fff;
+  background: rgba(255, 0, 0, 0.5);
+}
+
+.recenter-tool--enabled {
+  background: rgba(0, 0, 255, 0.5);
+}
+
+.recenter-tool>p {
+  margin: 0;
+} */

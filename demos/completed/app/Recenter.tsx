@@ -1,47 +1,25 @@
-import { subclass, property } from "esri/core/accessorSupport/decorators";
-import Widget = require("esri/widgets/Widget");
-import watchUtils = require("esri/core/watchUtils");
-
-import { renderable, tsx } from "esri/widgets/support/widget";
-
-import Point = require("esri/geometry/Point");
-import MapView = require("esri/views/MapView");
-
-type Coordinates = Point | number[] | any;
-
-interface Center {
-  x: number;
-  y: number;
-}
-
-interface State extends Center {
-  interacting: boolean;
-  scale: number;
-}
-
-interface Style {
-  textShadow: string;
-}
-
-const CSS = {
-  base: "recenter-tool"
-};
-
-interface RecenterParams extends __esri.WidgetProperties {
-  view: MapView,
-  initialCenter: number[]
-}
+import { aliasOf, subclass, property } from "esri/core/accessorSupport/decorators";
+import Widget from "esri/widgets/Widget";
+import { renderable } from "esri/widgets/support/widget";
+// @ts-ignore
+import * as watchUtils from "esri/core/watchUtils";
+import { tsx } from "esri/widgets/support/widget";
+import { Style, RecenterViewModelProperties } from "./interfaces";
+import RecenterViewModel from "./RecenterViewModel";
+import { CSS } from "./styles";
 
 // @ts-ignore
 @subclass("esri.widgets.Recenter")
 class Recenter extends Widget {
-  constructor(params?: RecenterParams) {
+  constructor(params?: RecenterViewModelProperties) {
     super(params);
+    this.viewModel = new RecenterViewModel(params);
     this._onViewChange = this._onViewChange.bind(this);
   }
 
   postInitialize() {
-    watchUtils.init(this, "view.center, view.interacting, view.scale", () => this._onViewChange());
+    const handle = watchUtils.init(this, "view.center, view.interacting, view.scale", () => this._onViewChange());
+    this.own(handle);
   }
 
   //--------------------------------------------------------------------
@@ -50,29 +28,25 @@ class Recenter extends Widget {
   //
   //--------------------------------------------------------------------
 
-  //----------------------------------
-  //  view
-  //----------------------------------
+  @aliasOf("viewModel.enabled")
+  enabled: RecenterViewModel["enabled"];
+
+  @aliasOf("viewModel.view")
+  view: RecenterViewModel["view"];
+
+  @aliasOf("viewModel.initialCenter")
+  initialCenter: RecenterViewModel["initialCenter"];
+
+  @aliasOf("viewModel.state")
+  state: RecenterViewModel["state"];
 
   @property()
-  @renderable()
-  view: MapView;
-
-  //----------------------------------
-  //  initialCenter
-  //----------------------------------
-
-  @property()
-  @renderable()
-  initialCenter: Coordinates;
-
-  //----------------------------------
-  //  state
-  //----------------------------------
-
-  @property()
-  @renderable()
-  state: State;
+  @renderable([
+    "viewModel.enabled",
+    "viewModel.view",
+    "viewModel.state",
+  ])
+  viewModel: RecenterViewModel;
 
   //-------------------------------------------------------------------
   //
@@ -81,42 +55,39 @@ class Recenter extends Widget {
   //-------------------------------------------------------------------
 
   render() {
-    const { x, y, scale } = this.state;
+    const { longitude, latitude, enabled } = this.state;
     const styles: Style = {
-      textShadow: this.state.interacting ? '-1px 0 orange, 0 1px orange, 1px 0 orange, 0 -1px orange' : ''
+      textShadow: this.state.interacting ? '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black' : ''
+    };
+    const rootClasses = {
+      [CSS.enabled]: enabled
     };
     return (
       <div
         bind={this}
-        class={CSS.base}
+        class={this.classes(CSS.base, rootClasses)}
         styles={styles}
-        onclick={this._defaultCenter}>
-        <p>x: {Number(x).toFixed(3)}</p>
-        <p>y: {Number(y).toFixed(3)}</p>
-        <p>scale: {Number(scale).toFixed(5)}</p>
+        onclick={this.defaultCenter}>
+        <p>longitude: {Number(longitude).toFixed(3)}</p>
+        <p>latitude: {Number(latitude).toFixed(3)}</p>
+        <p>{enabled ? "Enabled" : "Disabled"}</p>
       </div>
     );
   }
 
-  //-------------------------------------------------------------------
+  //--------------------------------------------------------------------------
   //
-  //  Private methods
+  //  Methods
   //
-  //-------------------------------------------------------------------
+  //--------------------------------------------------------------------------
 
-  private _onViewChange() {
-    let { interacting, center, scale } = this.view;
-    this.state = {
-      x: center.x,
-      y: center.y,
-      interacting,
-      scale
-    };
-  }
+  protected _onViewChange() {
+    this.viewModel.onViewChange();
+  };
 
-  private _defaultCenter() {
-    this.view.goTo(this.initialCenter);
+  public defaultCenter() {
+    this.viewModel.defaultCenter();
   }
 }
 
-export = Recenter;
+export default Recenter;
