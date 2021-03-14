@@ -10,6 +10,14 @@
 
 > 参考
 >
-> 1. https://developers.arcgis.com/javascript/latest/typescript-setup/
-> 2. https://developers.arcgis.com/javascript/latest/custom-widget/
+> 1. typescript环境搭建：
+>    https://developers.arcgis.com/javascript/latest/typescript-setup/
+>    https://www.tslang.cn/docs/handbook/tsconfig-json.html
+> 2. 装饰器理解：
+>    https://www.runoob.com/design-pattern/decorator-pattern.html
+>    https://www.tslang.cn/docs/handbook/decorators.html
+> 3. 微件示例：
+>    https://developers.arcgis.com/javascript/latest/custom-widget/
+>    https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-widget/
+>    https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-recenter/
 

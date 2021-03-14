@@ -32,7 +32,7 @@ interface RecenterParams extends __esri.WidgetProperties {
   initialCenter: number[]
 }
 
-
+// @ts-ignore
 @subclass("esri.widgets.Recenter")
 class Recenter extends Widget {
   constructor(params?: RecenterParams) {
@@ -42,7 +42,6 @@ class Recenter extends Widget {
 
   postInitialize() {
     watchUtils.init(this, "view.center, view.interacting, view.scale", () => this._onViewChange());
-
   }
 
   //--------------------------------------------------------------------

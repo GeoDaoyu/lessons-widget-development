@@ -1,6 +1,5 @@
 import EsriMap from "esri/Map";
 import MapView from "esri/views/MapView";
-import BasemapToggle from "esri/widgets/BasemapToggle";
 import Recenter from "./Recenter";
 
 const map = new EsriMap({
