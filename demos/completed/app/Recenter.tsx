@@ -13,7 +13,6 @@ import { CSS } from "./styles";
 class Recenter extends Widget {
   constructor(params?: RecenterViewModelProperties) {
     super(params);
-    this.viewModel = new RecenterViewModel(params);
     this._onViewChange = this._onViewChange.bind(this);
   }
 
@@ -28,9 +27,6 @@ class Recenter extends Widget {
   //
   //--------------------------------------------------------------------
 
-  @aliasOf("viewModel.enabled")
-  enabled: RecenterViewModel["enabled"];
-
   @aliasOf("viewModel.view")
   view: RecenterViewModel["view"];
 
@@ -40,13 +36,14 @@ class Recenter extends Widget {
   @aliasOf("viewModel.state")
   state: RecenterViewModel["state"];
 
-  @property()
+  @property({
+    type: RecenterViewModel
+  })
   @renderable([
-    "viewModel.enabled",
     "viewModel.view",
     "viewModel.state",
   ])
-  viewModel: RecenterViewModel;
+  viewModel = new RecenterViewModel();
 
   //-------------------------------------------------------------------
   //
@@ -55,9 +52,9 @@ class Recenter extends Widget {
   //-------------------------------------------------------------------
 
   render() {
-    const { longitude, latitude, enabled } = this.state;
+    const { longitude, latitude, enabled, interacting } = this.state;
     const styles: Style = {
-      textShadow: this.state.interacting ? '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black' : ''
+      textShadow: interacting ? '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black' : ''
     };
     const rootClasses = {
       [CSS.enabled]: enabled

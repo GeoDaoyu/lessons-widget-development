@@ -1,6 +1,10 @@
 import Accessor from "esri/core/Accessor";
 import { property, subclass } from "esri/core/accessorSupport/decorators";
-import { RecenterViewModelProperties, Coordinates, State, Center } from "./interfaces";
+import {
+  Coordinates,
+  State,
+  Center,
+} from "./interfaces";
 import { renderable } from "esri/widgets/support/widget";
 import type MapView from "esri/views/MapView";
 
@@ -13,7 +17,7 @@ class RecenterViewModel extends Accessor {
   //
   //--------------------------------------------------------------------------
 
-  constructor(props?: RecenterViewModelProperties) {
+  constructor() {
     super();
   }
 
@@ -22,10 +26,6 @@ class RecenterViewModel extends Accessor {
   //  Properties
   //
   //--------------------------------------------------------------------
-
-  @property()
-  @renderable()
-  enabled = false;
 
   //----------------------------------
   //  view
@@ -82,14 +82,7 @@ class RecenterViewModel extends Accessor {
 
   private _checkEnabled(center: Center): boolean {
     const { longitude, latitude } = center;
-    let enabled = false;
-    if (
-      Math.abs(longitude - 120) > .2
-      || Math.abs(latitude - 30) > .2
-    ) {
-      enabled = true;
-    }
-    return enabled;
+    return Math.abs(longitude - 120) > 0.2 || Math.abs(latitude - 30) > 0.2;
   }
 }
 
