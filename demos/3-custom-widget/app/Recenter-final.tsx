@@ -4,7 +4,9 @@ import Widget from "esri/widgets/Widget";
 import * as watchUtils from "esri/core/watchUtils";
 import { renderable, tsx } from "esri/widgets/support/widget";
 import type MapView from "esri/views/MapView";
+
 type Coordinates = number[];
+
 interface RecenterParams extends __esri.WidgetProperties {
   view: MapView;
   initialCenter: Coordinates;
@@ -17,7 +19,6 @@ interface State {
   enabled: boolean;
 }
 
-
 const CSS = {
   base: "recenter-tool",
   enabled: "recenter-tool--enabled"
@@ -26,6 +27,7 @@ const CSS = {
 // @ts-ignore
 @subclass("esri.widgets.Recenter")
 class Recenter extends Widget {
+
   constructor(params?: RecenterParams) {
     super(params);
     this._onViewChange = this._onViewChange.bind(this);
@@ -74,11 +76,13 @@ class Recenter extends Widget {
       </div>
     );
   }
+
   //-------------------------------------------------------------------
   //
   //  Private methods
   //
   //-------------------------------------------------------------------
+
   private _go() {
     if (this.state.enabled) {
       this.view.goTo(this.initialCenter);
