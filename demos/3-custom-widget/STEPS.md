@@ -1,6 +1,8 @@
 # 自定义微件
 
-## 创建`Recenter.tsx`继承`Widget`
+## 创建微件类
+
+新建`Recenter.tsx`，并继承自`Widget`
 
 ``` tsx
 import { subclass, property } from "esri/core/accessorSupport/decorators";
@@ -24,7 +26,7 @@ class Recenter extends Widget {
   label: string = "Home";
 ```
 
-## 修改`render`方法
+## 添加渲染方法
 
 ``` tsx
   render() {
@@ -42,39 +44,9 @@ class Recenter extends Widget {
 export default Recenter;
 ```
 
-## 完整文件(UI阶段)
+## 实例化微件
 
-Recenter.tsx:
-
-``` tsx
-import { subclass, property } from "esri/core/accessorSupport/decorators";
-import Widget from "esri/widgets/Widget";
-
-import { tsx } from "esri/widgets/support/widget";
-
-// @ts-ignore
-@subclass("esri.widgets.Recenter")
-class Recenter extends Widget {
-  constructor(params?: any) {
-    super(params);
-  }
-
-  @property()
-  label: string = "Home";
-
-  render() {
-    return (
-      <div>
-        {this.label}
-      </div>
-    );
-  }
-}
-
-export default Recenter;
-```
-
-## 在`main.ts`中引入`Recenter`
+在`main.ts`中引入`Recenter`
 
 ``` tsx
 import Recenter from "./Recenter";
@@ -85,165 +57,48 @@ view.when(function () {
 });
 ```
 
-访问测试页面，看看右上角是否已经添加上了我们的微件。
+访问测试页面，看看右上角是否已经添加上了我们的微件。🎉
 
-## 添加点击事件
+## 添加事件
 
-在`div`上绑定事件，加上私有方法，方法需要的参数，通过实例化时获得。警告提示时，补充各个参数的定义或接口。
+先修改`render`方法，在`div`上绑定点击事件，加上私有方法。
 
-## 完整文件
-
-Recenter.tsx:
-
-```tsx
-import { subclass, property } from "esri/core/accessorSupport/decorators";
-import Widget from "esri/widgets/Widget";
-
-import { tsx } from "esri/widgets/support/widget";
-import type MapView from "esri/views/MapView";
-
-type Coordinates = number[];
-
-interface RecenterParams extends __esri.WidgetProperties {
-  view: MapView,
-  initialCenter: Coordinates
-}
-
-// @ts-ignore
-@subclass("esri.widgets.Recenter")
-class Recenter extends Widget {
-  constructor(params?: RecenterParams) {
-    super(params);
-  }
-
-  @property()
-  label: string = "Home";
-
-  //----------------------------------
-  //  view
-  //----------------------------------
-
-  @property()
-  view: MapView;
-
-  //----------------------------------
-  //  initialCenter
-  //----------------------------------
-
-  @property()
-  initialCenter: Coordinates;
-
+``` tsx
   render() {
     return (
       <div 
         bind={this}
-        onclick={this._defaultCenter}
+        onclick={this._go}
       >
         {this.label}
       </div>
     );
   }
+```
+
+> 注意绑定`this`。
+
+添加私有方法，和`render`方法平级。使用`goTo`方法实现。
+
+```tsx
   //-------------------------------------------------------------------
   //
   //  Private methods
   //
   //-------------------------------------------------------------------
-  private _defaultCenter() {
+  private _go() {
     this.view.goTo(this.initialCenter);
   }
-}
-
-export default Recenter;
 ```
 
-## 在`main.ts`中加入参数
-
-``` ts
-import Recenter from "./Recenter";
-
-view.when(function () {
-  const recenter = new Recenter({
-    view: view,
-    initialCenter: [120, 30],
-  });
-  view.ui.add(recenter, "top-right");
-});
-```
-
-访问测试页面，点击微件，看看是否已经实现了居中视图。
-
-## 添加地图监听事件
-
-在生命周期函数中添加监听事件。
-
-监听地图的中心点，并展示到微件上。
-
-增加可用性判断。
-
-Recenter.tsx:
+方法中需要的`this.view`和`this.initialCenter`，添加到属性上。
 
 ```tsx
-import { subclass, property } from "esri/core/accessorSupport/decorators";
-import Widget from "esri/widgets/Widget";
-// @ts-ignore
-import * as watchUtils from "esri/core/watchUtils";
-import { renderable, tsx } from "esri/widgets/support/widget";
-import type MapView from "esri/views/MapView";
-
-type Coordinates = number[];
-
-interface Center {
-  longitude: number;
-  latitude: number;
-}
-
-interface State extends Center {
-  interacting: boolean;
-  enabled: boolean;
-}
-
-interface Style {
-  textShadow: string;
-}
-
-const CSS = {
-  base: "recenter-tool",
-  enabled: "recenter-tool--enabled"
-};
-
-interface RecenterParams extends __esri.WidgetProperties {
-  view: MapView,
-  initialCenter: number[]
-}
-
-// @ts-ignore
-@subclass("esri.widgets.Recenter")
-class Recenter extends Widget {
-  constructor(params?: RecenterParams) {
-    super(params);
-    this._onViewChange = this._onViewChange.bind(this);
-  }
-
-  postInitialize() {
-    watchUtils.init(this, "view.center, view.interacting, view.scale", () => this._onViewChange());
-  }
-
-  //--------------------------------------------------------------------
-  //
-  //  Properties
-  //
-  //--------------------------------------------------------------------
-
-  @property()
-  @renderable()
-  enabled = false;
-
   //----------------------------------
   //  view
   //----------------------------------
 
   @property()
-  @renderable()
   view: MapView;
 
   //----------------------------------
@@ -251,9 +106,48 @@ class Recenter extends Widget {
   //----------------------------------
 
   @property()
-  @renderable()
   initialCenter: Coordinates;
+```
 
+在示例化的时候，传入参数
+
+``` tsx
+  const recenter = new Recenter({
+    view: view,
+    initialCenter: [120, 30],
+  });
+```
+
+构造器中接收参数
+
+``` tsx
+  constructor(params?: RecenterParams) {
+    super(params);
+  }
+```
+
+补充类型
+
+```tsx
+import type MapView from "esri/views/MapView";
+type Coordinates = number[];
+interface RecenterParams extends __esri.WidgetProperties {
+  view: MapView,
+  initialCenter: Coordinates
+}
+```
+
+访问测试页面，试试点击事件是否已经生效。🎉
+
+## 监听地图
+
+上一步中我们已经能通过微件，影响到地图。现在我们来试试，通过地图的变化，影响微件。
+
+我们监听地图的中心点坐标和比例尺，并展示到微件上。
+
+先增加一个属性叫`state`，用来存中心点坐标。
+
+``` tsx
   //----------------------------------
   //  state
   //----------------------------------
@@ -261,79 +155,156 @@ class Recenter extends Widget {
   @property()
   @renderable()
   state: State;
+```
 
-  //-------------------------------------------------------------------
-  //
-  //  Public methods
-  //
-  //-------------------------------------------------------------------
+`state`是一个对象。
 
+```tsx
+interface State {
+  longitude: number;
+  latitude: number;
+  scale: number;
+}
+```
+
+改变`render`函数，增加坐标的显示。（删除之前的`label`属性）
+
+``` tsx
   render() {
-    const { longitude, latitude, enabled } = this.state;
-    const styles: Style = {
-      textShadow: this.state.interacting ? '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black' : ''
-    };
-    const rootClasses = {
-      [CSS.enabled]: enabled
-    };
+    const { longitude, latitude, scale } = this.state;
     return (
       <div
         bind={this}
-        class={this.classes(CSS.base, rootClasses)}
-        styles={styles}
-        onclick={this._defaultCenter}>
+        onclick={this._go}>
         <p>longitude: {Number(longitude).toFixed(3)}</p>
         <p>latitude: {Number(latitude).toFixed(3)}</p>
-        <p>{enabled ? "Enabled" : "Disabled"}</p>
+        <p>scale: {Number(scale).toFixed(5)}</p>
       </div>
     );
   }
+```
 
-  //-------------------------------------------------------------------
-  //
-  //  Private methods
-  //
-  //-------------------------------------------------------------------
+在生命周期`postInitialize`函数中，加入对`view`的监听
 
+``` tsx
+  postInitialize() {
+    watchUtils.init(this, "view.center, view.scale", () => this._onViewChange());
+  }
+```
+
+`watchUtils`是官方提供的一个监听工具
+
+``` tsx
+// @ts-ignore
+import * as watchUtils from "esri/core/watchUtils";
+```
+
+添加函数处理`view`的变化
+
+``` tsx
   private _onViewChange() {
-    const { interacting, center } = this.view;
+    const { scale, center } = this.view;
+    const { latitude, longitude } = center;
+    this.state = {
+      latitude,
+      longitude,
+			scale,
+    };
+  }
+```
+
+为保存正确的`this`指向，在构造器中做一次绑定。
+
+```tsx
+  constructor(params?: RecenterParams) {
+    super(params);
+    this._onViewChange = this._onViewChange.bind(this);
+  }
+```
+
+访问测试页面，看看坐标信息是否已经显示到微件上，再拖动地图呢。🎉
+
+## 增加自定义功能
+
+既然我们能监听到`view`上的坐标信息，现在来实现一个自定义功能：当中心点在初始点一定范围内时，禁用点击功能；当中心点大于一定范围时，才能使用点击功能。
+
+增加一个`enabled`属性也挂到`state`上
+
+```tsx
+interface State {
+  longitude: number;
+  latitude: number;
+  scale: number;
+  enabled: boolean;
+}
+```
+
+修改`_onViewChange`函数
+
+```tsx
+  private _onViewChange() {
+    const { scale, center } = this.view;
     const { latitude, longitude } = center;
     let enabled = false;
     if (
-      Math.abs(longitude - 120) > .2
-      || Math.abs(latitude - 30) > .2
+      Math.abs(longitude - 120) > 0.2
+      || Math.abs(latitude - 30) > 0.2
     ) {
       enabled = true;
     }
     this.state = {
       latitude,
       longitude,
-      interacting,
+      scale,
       enabled,
     };
   }
+```
 
-  private _defaultCenter() {
+修改`_go`函数
+
+```tsx
+  private _go() {
     if (this.state.enabled) {
       this.view.goTo(this.initialCenter);
     }
   }
-}
-
-export default Recenter;
 ```
 
-main.css:
+为了看上去更明显，增加一点样式，修改`render`函数
 
-```css
-html,
-body,
-#viewDiv {
-  padding: 0;
-  margin: 0;
-  height: 100%;
-}
+```tsx
+  render() {
+    const { longitude, latitude, scale, enabled } = this.state;
+    const rootClasses = {
+      [CSS.enabled]: enabled
+    };
+    return (
+      <div
+        bind={this}
+        onclick={this._go}
+        class={this.classes(CSS.base, rootClasses)}
+      >
+        <p>longitude: {Number(longitude).toFixed(3)}</p>
+        <p>latitude: {Number(latitude).toFixed(3)}</p>
+        <p>scale: {Number(scale).toFixed(5)}</p>
+      </div>
+    );
+  }
+```
 
+在微件类之外，添加样式对象
+
+```tsx
+const CSS = {
+  base: "recenter-tool",
+  enabled: "recenter-tool--enabled"
+};
+```
+
+样式文件，红色为禁用状态，蓝色为可用状态
+
+``` css
 .recenter-tool {
   padding: 2em;
   width: 150px;
@@ -350,6 +321,8 @@ body,
   margin: 0;
 }
 ```
+
+访问测试页面，微件的自定义功能是不是已经加上了呢。🎉
 
 ## 拆分文件
 

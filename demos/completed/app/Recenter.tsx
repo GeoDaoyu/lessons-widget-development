@@ -17,7 +17,7 @@ class Recenter extends Widget {
   }
 
   postInitialize() {
-    const handle = watchUtils.init(this, "view.center, view.interacting, view.scale", () => this._onViewChange());
+    const handle = watchUtils.init(this, "view.center, view.interacting", () => this._onViewChange());
     this.own(handle);
   }
 
