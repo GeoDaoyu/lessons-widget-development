@@ -1,23 +1,15 @@
-
 import type MapView from "esri/views/MapView";
 
 export type Coordinates = number[];
 
-interface Center {
+export interface RecenterViewModelProperties extends __esri.WidgetProperties {
+  view: MapView;
+  initialCenter: Coordinates;
+}
+
+export interface State {
   longitude: number;
   latitude: number;
-}
-
-export interface State extends Center {
-  interacting: boolean;
+  scale: number;
   enabled: boolean;
-}
-
-export interface Style {
-  textShadow: string;
-}
-
-export interface RecenterViewModelProperties extends __esri.WidgetProperties {
-  view: MapView,
-  initialCenter: number[]
 }

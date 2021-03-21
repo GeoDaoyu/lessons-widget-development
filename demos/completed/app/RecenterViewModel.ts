@@ -1,12 +1,9 @@
 import Accessor from "esri/core/Accessor";
 import { property, subclass } from "esri/core/accessorSupport/decorators";
-import {
-  Coordinates,
-  State,
-  Center,
-} from "./interfaces";
 import { renderable } from "esri/widgets/support/widget";
+import { Coordinates, State } from "./interfaces";
 import type MapView from "esri/views/MapView";
+import type Point from "esri/geometry/Point";
 
 // @ts-ignore
 @subclass("esri.demo.RecenterViewModel")
@@ -57,18 +54,18 @@ class RecenterViewModel extends Accessor {
   //
   //--------------------------------------------------------------------------
   public onViewChange() {
-    const { interacting, center } = this.view;
+    const { scale, center } = this.view;
     const { latitude, longitude } = center;
     const enabled = this._checkEnabled(center);
     this.state = {
       latitude,
       longitude,
-      interacting,
+      scale,
       enabled,
     };
   }
 
-  public defaultCenter() {
+  public go() {
     if (this.state.enabled) {
       this.view.goTo(this.initialCenter);
     }
@@ -80,7 +77,7 @@ class RecenterViewModel extends Accessor {
   //
   //--------------------------------------------------------------------------
 
-  private _checkEnabled(center: Center): boolean {
+  private _checkEnabled(center: Point): boolean {
     const { longitude, latitude } = center;
     return Math.abs(longitude - 120) > 0.2 || Math.abs(latitude - 30) > 0.2;
   }

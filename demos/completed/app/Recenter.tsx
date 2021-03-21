@@ -4,7 +4,7 @@ import { renderable } from "esri/widgets/support/widget";
 // @ts-ignore
 import * as watchUtils from "esri/core/watchUtils";
 import { tsx } from "esri/widgets/support/widget";
-import { Style, RecenterViewModelProperties } from "./interfaces";
+import { RecenterViewModelProperties } from "./interfaces";
 import RecenterViewModel from "./RecenterViewModel";
 import { CSS } from "./styles";
 
@@ -52,22 +52,19 @@ class Recenter extends Widget {
   //-------------------------------------------------------------------
 
   render() {
-    const { longitude, latitude, enabled, interacting } = this.state;
-    const styles: Style = {
-      textShadow: interacting ? '-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black' : ''
-    };
+    const { longitude, latitude, scale, enabled } = this.state;
     const rootClasses = {
       [CSS.enabled]: enabled
     };
     return (
       <div
         bind={this}
+        onclick={this._go}
         class={this.classes(CSS.base, rootClasses)}
-        styles={styles}
-        onclick={this.defaultCenter}>
+      >
         <p>longitude: {Number(longitude).toFixed(3)}</p>
         <p>latitude: {Number(latitude).toFixed(3)}</p>
-        <p>{enabled ? "Enabled" : "Disabled"}</p>
+        <p>scale: {Number(scale).toFixed(5)}</p>
       </div>
     );
   }
@@ -78,12 +75,12 @@ class Recenter extends Widget {
   //
   //--------------------------------------------------------------------------
 
-  protected _onViewChange() {
+  private _onViewChange() {
     this.viewModel.onViewChange();
   };
 
-  public defaultCenter() {
-    this.viewModel.defaultCenter();
+  private _go() {
+    this.viewModel.go();
   }
 }
 
