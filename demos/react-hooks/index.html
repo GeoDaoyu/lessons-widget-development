@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>Widget Development</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/css/main.css">
+  <link rel="stylesheet" href="./app/main.css">
+  <script type="text/javascript">
+    var href = location.href;
+    var demoLocation = href.slice(0, href.lastIndexOf("/"));
+    var dojoConfig = {
+      // configure loKder to create demo modules (non-CDN) from the correct location.
+      packages: [{
+        name: "demo",
+        location: demoLocation + '/app'
+      },
+      {
+        name: "react",
+        location: "https://unpkg.com/react@17/umd/",
+        main: "react.production.min"
+      },
+      {
+        name: "react-dom",
+        location: "https://unpkg.com/react-dom@17/umd/",
+        main: "react-dom.production.min"
+      }]
+    };
+  </script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://js.arcgis.com/4.18/"></script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+  <script type="text/babel">
+    require([
+      "react",
+      "react-dom",
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/core/watchUtils",
+    ], function (React, ReactDOM, EsriMap, MapView, watchUtils) {
+      const map = new EsriMap({
+        basemap: "streets",
+      });
+
+      const view = new MapView({
+        map: map,
+        container: "viewDiv",
+        center: [120, 30],
+        zoom: 8,
+      });
+
+      const { useState, useEffect } = React;
+
+      const useWatches = (obj, names, callback) => {
+        useEffect(() => {
+          if (!obj) {
+            return;
+          }
+          const handles = names.map(name => obj.watch(name, callback));
+          return function removeHandles() {
+            handles.forEach(handle => {
+              handle.remove();
+            });
+          };
+        }, [obj, names, callback]);
+      }
+
+      const useWatch = (obj, name, callback) => {
+        useWatches(obj, [name], callback);
+      }
+
+      const Recenter = ({ view, initialCenter }) => {
+        const [latitude, setLatitude] = useState(0);
+        const [longitude, setLongitude] = useState(0);
+        const [scale, setScale] = useState(0);
+        const [enabled, setEnabled] = useState(0);
+
+        const _onViewChange = () => {
+          const { scale, center } = view;
+          const { latitude, longitude } = center;
+          let enabled = false;
+          if (
+            Math.abs(longitude - 120) > 0.2
+            || Math.abs(latitude - 30) > 0.2
+          ) {
+            enabled = true;
+          }
+          setLatitude(latitude);
+          setLongitude(longitude);
+          setScale(scale);
+          setEnabled(enabled);
+        }
+
+        useWatch(view, 'center, scale', _onViewChange);
+
+        const go = () => {
+          if (enabled) {
+            view.goTo(initialCenter);
+          }
+        }
+        return (
+          <div
+            onClick={go}
+            className={enabled ? 'recenter-tool recenter-tool--enabled' : 'recenter-tool'}
+          >
+            <p>longitude: {Number(longitude).toFixed(3)}</p>
+            <p>latitude: {Number(latitude).toFixed(3)}</p>
+            <p>scale: {Number(scale).toFixed(5)}</p>
+          </div>
+        )
+      }
+
+      const node = document.createElement("div");
+      view.ui.add(node, "top-right");
+      ReactDOM.render(<Recenter view={view} initialCenter={[120, 30]} />, node);
+    });
+  </script>
+</body>
+
+</html>
