@@ -55,24 +55,6 @@
 
       const { useState, useEffect } = React;
 
-      const useWatches = (obj, names, callback) => {
-        useEffect(() => {
-          if (!obj) {
-            return;
-          }
-          const handles = names.map(name => obj.watch(name, callback));
-          return function removeHandles() {
-            handles.forEach(handle => {
-              handle.remove();
-            });
-          };
-        }, [obj, names, callback]);
-      }
-
-      const useWatch = (obj, name, callback) => {
-        useWatches(obj, [name], callback);
-      }
-
       const Recenter = ({ view, initialCenter }) => {
         const [latitude, setLatitude] = useState(0);
         const [longitude, setLongitude] = useState(0);
@@ -95,7 +77,17 @@
           setEnabled(enabled);
         }
 
-        useWatch(view, 'center, scale', _onViewChange);
+        useEffect(() => {
+          if (!view) {
+            return;
+          }
+          const handles = view.watch('center, scale', _onViewChange);
+          return function removeHandles() {
+            handles.forEach(handle => {
+              handle.remove();
+            });
+          };
+        }, [view]);
 
         const go = () => {
           if (enabled) {
