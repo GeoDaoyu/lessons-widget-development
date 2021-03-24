@@ -1,8 +1,9 @@
-import type MapView from "esri/views/MapView";
+import Accessor from "esri/core/Accessor";
+import MapView from "esri/views/MapView";
 
 export type Coordinates = number[];
 
-export interface RecenterViewModelProperties extends __esri.WidgetProperties {
+export interface RecenterViewModelProperties extends Accessor {
   view: MapView;
   initialCenter: Coordinates;
 }

@@ -7,7 +7,7 @@ import type MapView from "esri/views/MapView";
 
 type Coordinates = number[];
 
-interface RecenterParams extends __esri.WidgetProperties {
+interface RecenterParams extends Widget {
   view: MapView;
   initialCenter: Coordinates;
 }
