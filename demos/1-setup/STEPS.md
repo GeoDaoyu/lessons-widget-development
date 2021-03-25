@@ -9,7 +9,7 @@
 2. 安装依赖
 
    ```shell
-   npm install --save-dev @types/arcgis-js-api @types/dojo
+   npm install --save-dev typescript @types/arcgis-js-api
    ```
 
 3. 配置

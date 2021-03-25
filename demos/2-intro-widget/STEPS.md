@@ -6,23 +6,29 @@
      view: view,
    });
    
-   view.ui.add(homeWidget, "top-left");
+   view.ui.add(homeWidget, "top-right");
    ```
    
 2. 使用HomeViewModel
 
    ```ts
    const homeViewModel = new HomeViewModel({
-     view: view, 
+     view: view,
    });
    
-   const html = `<button id="homeDiv" class="esri-widget--button">主页</button>`;
-   domConstruct.place(html, view.container, "last");
+   // <div id="home" class="esri-widget--button esri-widget esri-home">
+   //   <span class="esri-icon esri-icon-home"></span>
+   // </div>
+   const node = document.createElement("div");
+   node.id = "home";
+   node.innerHTML = `<span class="esri-icon esri-icon-home"></span>`;
+   node.className = "esri-widget--button esri-widget esri-home";
+   document.getElementById("viewDiv").appendChild(node);
    
-   const btn = document.getElementById("homeDiv");
-   on(btn, "click", () => {
+   const homeWidget = document.getElementById("home");
+   homeWidget.addEventListener("click", function () {
      homeViewModel.go();
    });
    
-   view.ui.add("homeDiv", "bottom-left");
+   view.ui.add(homeWidget, "top-right");
    ```

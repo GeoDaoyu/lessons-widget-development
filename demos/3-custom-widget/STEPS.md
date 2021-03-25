@@ -19,20 +19,13 @@ class Recenter extends Widget {
 }
 ```
 
-## 添加属性
-
-``` tsx
-  @property()
-  label: string = "Home";
-```
-
 ## 添加渲染方法
 
 ``` tsx
   render() {
     return (
-      <div>
-        {this.label}
+      <div class="esri-widget--button esri-widget esri-home">
+        <span class="esri-icon esri-icon-home"></span>
       </div>
     );
   }
@@ -66,11 +59,12 @@ view.when(function () {
 ``` tsx
   render() {
     return (
-      <div 
+      <div
         bind={this}
         onclick={this._go}
+        class="esri-widget--button esri-widget esri-home"
       >
-        {this.label}
+        <span class="esri-icon esri-icon-home"></span>
       </div>
     );
   }
@@ -167,7 +161,7 @@ interface State {
 }
 ```
 
-改变`render`函数，增加坐标的显示。（删除之前的`label`属性）
+改变`render`函数，增加坐标的显示。
 
 ``` tsx
   render() {
