@@ -12,20 +12,22 @@
     var demoLocation = href.slice(0, href.lastIndexOf("/"));
     var dojoConfig = {
       // configure loKder to create demo modules (non-CDN) from the correct location.
-      packages: [{
-        name: "demo",
-        location: demoLocation + '/app'
-      },
-      {
-        name: "react",
-        location: "https://unpkg.com/react@17/umd/",
-        main: "react.production.min"
-      },
-      {
-        name: "react-dom",
-        location: "https://unpkg.com/react-dom@17/umd/",
-        main: "react-dom.production.min"
-      }]
+      packages: [
+        {
+          name: "demo",
+          location: demoLocation + '/app'
+        },
+        {
+          name: "react",
+          location: "https://unpkg.com/react@17/umd/",
+          main: "react.production.min"
+        },
+        {
+          name: "react-dom",
+          location: "https://unpkg.com/react-dom@17/umd/",
+          main: "react-dom.production.min"
+        }
+      ]
     };
   </script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -69,6 +71,9 @@
         componentDidMount() {
           this.props.view.when(this.onViewLoaded);
         }
+        componentWillUnmount() {
+          this.handle.remove();
+        }
 
         go = () => {
           const { view, initialCenter, enabled } = this.state;
@@ -78,7 +83,7 @@
         }
 
         onViewLoaded = (view) => {
-          watchUtils.init(view, "center, scale", () => this._onViewChange());
+          this.handle = watchUtils.init(view, "center, scale", () => this._onViewChange());
         }
 
         _onViewChange() {
