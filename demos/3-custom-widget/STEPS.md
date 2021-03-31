@@ -329,3 +329,15 @@ const CSS = {
 
 如果项目特别复杂，可以拆出`interfaces.d.ts`、`RecenterViewModel.ts`等文件。
 
+```
+completed
+├── app
+│   ├──  interfaces.d.ts (接口声明) 
+│   ├──  main.css (样式文件)
+│   ├──  main.ts (入口)
+│   ├──  Recenter.tsx (微件UI层)
+│   ├──  RecenterViewModel.ts (微件逻辑层)
+│   └──  styles.ts (样式对象,BEM)
+└── index.html
+```
+
