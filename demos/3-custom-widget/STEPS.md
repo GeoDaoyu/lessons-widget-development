@@ -182,16 +182,23 @@ interface State {
 
 ``` tsx
   postInitialize() {
-    watchUtils.init(this, "view.center, view.scale", () => this._onViewChange());
+    this._onViewChange(); // 初始化state值
+    this.view.watch("center, scale", () => this._onViewChange());
   }
 ```
 
-`watchUtils`是官方提供的一个监听工具
+官方也提供的一个监听工具`watchUtils`。
 
 ``` tsx
 // @ts-ignore
 import * as watchUtils from "esri/core/watchUtils";
+
+watchUtils.init(this, "view.center, view.scale", () => this._onViewChange());
 ```
+
+> watchUtils.init函数，会在初始化的时候，调用一遍callback。
+>
+> https://developers.arcgis.com/javascript/latest/api-reference/esri-core-watchUtils.html
 
 添加函数处理`view`的变化
 
