@@ -40,7 +40,7 @@
 4. 编译并监听文件变化
 
    ```shell
-   npx tsx -w
+   npx tsc -w
    ```
 
 5. 编写 `main.ts`在 `app` 目录下
