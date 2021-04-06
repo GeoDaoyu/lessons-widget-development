@@ -8,16 +8,27 @@
 
 
 
-> 参考
->
-> 1. typescript环境搭建：
->    https://developers.arcgis.com/javascript/latest/typescript-setup/
->    https://www.tslang.cn/docs/handbook/tsconfig-json.html
-> 2. 装饰器理解：
->    https://www.runoob.com/design-pattern/decorator-pattern.html
->    https://www.tslang.cn/docs/handbook/decorators.html
-> 3. 微件示例：
->    https://developers.arcgis.com/javascript/latest/custom-widget/
->    https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-widget/
->    https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-recenter/
+致谢：
+
+创作思路来自GeoScene2020开发者大会严文颢的《ArcGIS API for JavaScript 高级开发》和Esri2020年开发者大会Matt Driscoll和Juan Carlos Franco的《ArcGIS API for JavaScript: Building your own Widget》。
+
+
+
+参考:
+
+1. typescript环境搭建：
+   https://developers.arcgis.com/javascript/latest/typescript-setup/
+   https://www.tslang.cn/docs/handbook/tsconfig-json.html
+2. 装饰器理解：
+   https://www.runoob.com/design-pattern/decorator-pattern.html
+   https://www.tslang.cn/docs/handbook/decorators.html
+3. 微件示例：
+   https://developers.arcgis.com/javascript/latest/custom-widget/
+   https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-widget/
+   https://developers.arcgis.com/javascript/latest/sample-code/widgets-custom-recenter/
+4. Proxy：
+   https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+   https://es6.ruanyifeng.com/#docs/proxy
+5. 官网微件tsx
+   https://github.com/Esri/arcgis-js-api/tree/4master/widgets
 
